@@ -20,6 +20,28 @@ The project evolved through three main stages of development:
 * `weights/`: Folder containing the pre-trained weights (`.pth`).
 * `assets/`: Emoji images for the UI.
 
+## 📊 Dataset
+To train the model, you need to provide your own dataset. This project is optimized for a 3-class classification (Happy, Sad, Neutral).
+
+### Recommended Datasets:
+* [FER-2013](https://www.kaggle.com/datasets/msambare/fer2013) (Highly recommended)
+* [AffectNet](http://mohammadmahoor.com/affectnet/)
+
+### Data Preparation:
+1. Create a `dataset/data/` folder in the root directory.
+2. Organize your images into `train` and `test` subfolders as follows:
+   ```text
+   data/
+   ├── train/
+   │   ├── happy/
+   │   ├── sad/
+   │   └── neutral/
+   └── test/
+       ├── happy/
+       ├── sad/
+       └── neutral/
+3. You can add new emotion classes, but this will require modifying the model's structure for training 
+   
 ## 🔧 Installation
 
 1. Clone the repository:
