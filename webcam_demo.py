@@ -60,8 +60,8 @@ def main():
     # Dictionary mapping class indices to emoji images
     emoji_dict = {
         0: cv2.imread('assets/smile_china.jpg'),
-        1: cv2.imread('assets/sad_china.jpg'),
-        2: cv2.imread('assets/n_china.jpg')
+        2: cv2.imread('assets/sad_china.jpg'),
+        1: cv2.imread('assets/n_china.jpg')
     }
 
     # smoothing: stores the last 5 predictions to prevent flickering
