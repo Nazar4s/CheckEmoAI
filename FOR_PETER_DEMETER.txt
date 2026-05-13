@@ -1,0 +1,46 @@
+<3 17. LADENIE NEURÓNOVEJ SIETE CNN <3
+
+1. ÚVOD A CIEĽ PROJEKTU
+Tento projekt je zameraný na implementáciu, trénovanie a optimalizáciu konvolučnej neurónovej siete pre klasifikáciu emócií tváre v reálnom čase. Hlavným cieľom v rámci témy č. 17 bolo nájsť optimálnu konfiguráciu modelu, ktorá dosahuje najvyššiu presnosť (Accuracy) pri zachovaní stability predikcie.
+
+2. POPIS ŠTRUKTÚRY PROJEKTU
+Projekt pozostáva z troch hlavných modulov:
+- train.py: Základný skript pre trénovanie s pokročilými technikami.
+- webcam_demo.py: Aplikácia pre inferenciu v reálnom čase pomocou webkamery.
+- experiments.py: Automatizovaný pipeline na porovnávanie rôznych konfigurácií (jadro procesu ladenia).
+
+3. POPIS MODULOV A FUNKCIÍ
+
+A. train.py (Hlavný trénovací proces)
+Tento skript implementuje robustný trénovací cyklus.
+- get_resnet_model(): Funkcia adaptuje architektúru ResNet18 pre vstup v odtieňoch sivej (1 kanál) a mení koncovú vrstvu pre klasifikáciu 3 tried (Happy, Sad, Neutral). Implementuje stratégiu zmrazenia váh pre počiatočné učenie.
+- EmoModel: Vlastná architektúra CNN, slúžiaca ako baseline pre porovnanie.
+- Stratégia "Unfreezing": Skript monitoruje validáciu a ak sa presnosť nezlepšuje, automaticky rozmrazí váhy modelu pre jemné doladenie s nižším Learning Rate.
+
+B. webcam_demo.py (Inferencia v reálnom čase)
+Funkčná aplikácia spĺňajúca požiadavky na praktické využitie.
+- Detekcia tváre: Využíva Haar Cascade klasifikátor pre lokalizáciu tváre v obraze.
+- Voting Mechanism (predictions_history): Algoritmus na vyhladzovanie predikcií. Ukladá posledných 5 snímok a vyberá najčastejšiu emóciu, čím eliminuje blikanie (flickering) pri zmene svetelných podmienok.
+- UI Overlay: Vykresľuje emodži a skóre spoľahlivosti priamo do video streamu.
+
+C. experiments.py (Ladenie a experimentálne porovnávanie)
+Tento skript slúži ako dôkaz systematického ladenia. Spúšťa 5 rôznych konfigurácií pre nájdenie maxima:
+
+Konfigurácie v experimente:
+1. 01_Baseline_CustomCNN: Vlastná sieť s nižším počtom parametrov (základ pre porovnanie).
+2. 02_ResNet18_Original: Standardný ResNet18 s rozlíšením 112x112.
+3. 03_ResNet18_HighRes: Konfigurácia s rozlíšením 224x224. Tento experiment preukázal vplyv hustoty vstupných dát na presnosť.
+4. 04_ResNet34_Deep: Použitie hlbšej siete ResNet34 pre zachytenie komplexnejších čŕt tváre.
+5. 05_ResNet18_SGD_Momentum: Testovanie vplyvu optimalizátora (výmena AdamW za SGD s hybnosťou).
+
+Funkcie v experiments.py:
+- save_training_graphs(): Automaticky generuje grafy straty a presnosti pre každú konfiguráciu.
+- save_confusion_matrix(): Generuje maticu zámen, ktorá vizualizuje, ktoré emócie si sieť najčastejšie zamieňa.
+- train_config(): Zapuzdruje celý proces od augmentácie dát až po uloženie najlepších váh.
+
+4. IMPLEMENTOVANÉ TECHNIKY LADENIA
+V rámci riešenia boli aplikované nasledovné techniky na zvýšenie efektívnosti:
+- Augmentácia dát - Náhodné otáčanie, horizontálne preklápanie a úprava jasu/kontrastu pre lepšiu generalizáciu.
+- WeightedRandomSampler - Riešenie problému nevyváženosti tried v datasete.
+- Label Smoothing - Technika na zamedzenie prílišnej istoty modelu, čo zlepšuje výsledky na testovacích dátach.
+- Scheduler (ReduceLROnPlateau) - Automatické znižovanie rýchlosti učenia pri stagnácii validácie.
